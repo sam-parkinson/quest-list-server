@@ -1,8 +1,8 @@
 {
-  "name": "capstone-2-server",
-  "version": "1.0.0",
+  "name": "questify-server",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "mocha --require test/setup.js",
     "dev": "nodemon src/server.js",
@@ -17,16 +17,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "helmet": "^3.18.0",
-    "morgan": "^1.9.1"
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.19.0",
+    "morgan": "^1.9.1",
+    "pg": "^7.11.0",
+    "xss": "^1.0.6"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.1",
+    "postgrator-cli": "^3.1.0",
     "supertest": "^4.0.2"
   }
 }
