@@ -5,5 +5,5 @@ CREATE TABLE questify_quests (
   date_created TIMESTAMP DEFAULT now() NOT NULL,
   date_modified TIMESTAMP,
   completed BOOLEAN DEFAULT FALSE NOT NULL,
-  quest_id INTEGER REFERENCES questify_users(id) ON DELETE SET NULL
+  user_id INTEGER REFERENCES questify_users(id) ON DELETE SET NULL
 );
