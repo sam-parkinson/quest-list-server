@@ -146,6 +146,24 @@ function seedUsers(db, users) {
     )
 }
 
+function seedQuests(db, users, quests, tasks=[]) {
+  return db.transaction(async trx => {
+    await seedUsers(trx, users)
+    await trx.into('questify_quests').insert(quests)
+    await trx.raw(
+      `SELECT setval('questify_quests_id_seq', ?)`,
+      [quests[quests.length - 1].id],
+    )
+    if (tasks.length) {
+      await trx.into('questify_tasks').insert(tasks)
+      await trx.raw(
+        `SELECT setval('questify_tasks_id_seq', ?)`,
+        [tasks[tasks.length - 1].id],
+      )
+    }
+  })
+}
+
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
     subject: user.user_name,
@@ -163,4 +181,5 @@ module.exports = {
   cleanTables,
   makeAuthHeader,
   seedUsers,
+  seedQuests,
 }
