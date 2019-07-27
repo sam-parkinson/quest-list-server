@@ -50,9 +50,9 @@ const QuestsService = {
       quest_name: xss(quest.quest_name),
       quest_desc: xss(quest.quest_desc),
       date_created: new Date(quest.date_created),
-      date_modified: new Date(quest.date_modified) || null,
+      date_modified: quest.date_modified ? new Date(quest.date_modified) : null,
       completed: quest.completed,
-      total_tasks: quest.total_tasks,
+      total_tasks: Number(quest.total_tasks),
       completed_tasks: quest.completed_tasks
     }
   }

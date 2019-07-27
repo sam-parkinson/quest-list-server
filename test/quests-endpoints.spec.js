@@ -48,6 +48,18 @@ describe.only('Quest Endpoints', function() {
           testTasks,
         )
       )
+      
+      it('responds with 200 and all quests associated with a user ID', () => {
+        const expectedQuest = helpers.makeExpectedQuest(
+          testUsers[0].id, 
+          testQuests[0],
+          testTasks
+        );
+        return supertest(app)
+          .get('/api/quests')
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .expect(200, [ expectedQuest ])
+      })
     })
   });
 });

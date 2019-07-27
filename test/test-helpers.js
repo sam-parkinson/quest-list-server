@@ -62,7 +62,8 @@ function makeTasksArray(users, quests) {
       user_id: users[0].id,
       quest_id: quests[0].id,
       completed: true,
-      date_created: new Date('2019-01-05T12:12:12.123Z')
+      date_created: new Date('2019-01-05T12:12:12.123Z'),
+      date_modified: new Date('2019-02-05T12:12:12.123Z')
     },
     {
       id: 2,
@@ -100,7 +101,32 @@ function makeTasksArray(users, quests) {
       completed: false,
       date_created: new Date('2019-01-05T12:12:12.123Z')
     },
+    {
+      id: 6,
+      task_name: 'task 6',
+      task_desc: 'description',
+      user_id: users[0].id,
+      quest_id: quests[0].id,
+      completed: false,
+      date_created: new Date('2019-01-05T12:12:12.123Z')
+    },
   ]
+}
+
+function makeExpectedQuest(userId, quest, tasks=[]) {
+  const total_tasks = tasks
+    .filter(task => task.quest_id === quest.id)
+    .length;
+
+  return {
+    id: quest.id,
+    quest_name: quest.quest_name,
+    quest_desc: quest.quest_desc,
+    completed: quest.completed,
+    date_created: quest.date_created.toISOString(),
+    date_modified: quest.date_modified ? quest.date_modified : null,
+    total_tasks: total_tasks
+  }
 }
 
 function makeQuestsFixtures() {
@@ -176,6 +202,7 @@ module.exports = {
   makeUsersArray,
   makeQuestsArray,
   makeTasksArray,
+  makeExpectedQuest,
 
   makeQuestsFixtures,
   cleanTables,
