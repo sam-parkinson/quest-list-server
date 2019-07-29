@@ -50,5 +50,44 @@ questRouter
     )      
   })
 
+questRouter
+  .route('/:quest_id')
+  .all(requireAuth)
+  .all(checkQuestExists)
+  .get((req, res, next) => {
+    QuestsService.getTasksByQuestId(
+      req.app.get('db'),
+      req.params.quest_id,
+    )
+      .then(tasks => {
+        res.json({
+          quest: res.quest,
+          tasks: tasks.map(task => QuestsService.scrubTask(task))
+        })
+      })
+      .catch(next)
+  })
+
+async function checkQuestExists(req, res, next) {
+  try{
+    const rawQuest = await QuestsService.getQuestById(
+      req.app.get('db'),
+      req.user.id,
+      req.params.quest_id,
+    )
+
+    if (!rawQuest)
+      return res.status(404).json({
+        error: `Quest not found`
+      })
+
+    const quest = QuestsService.scrubQuest(rawQuest)
+
+    res.quest = quest
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
 
 module.exports = questRouter;

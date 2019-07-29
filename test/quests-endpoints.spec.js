@@ -51,7 +51,6 @@ describe.only('Quest Endpoints', function() {
       
       it('responds with 200 and all quests associated with a user ID', () => {
         const expectedQuest = helpers.makeExpectedQuest(
-          testUsers[0].id, 
           testQuests[0],
           testTasks
         );
@@ -59,7 +58,37 @@ describe.only('Quest Endpoints', function() {
           .get('/api/quests')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, [ expectedQuest ])
+      });
+    });
+  });
+
+  describe(`GET /api/quests/:quest_id`, () => {
+    context('Given quest and tasks', () => {
+      beforeEach('insert quests', () => 
+        helpers.seedQuests(
+          db,
+          testUsers,
+          testQuests,
+          testTasks,
+        )
+      )
+
+      it(`responds with 200, the given quest, and all associated tasks`, () => {
+        const expectedJson = {
+          quest: helpers.makeExpectedQuest(
+            testQuests[0],
+            testTasks,
+          ),
+          tasks: helpers.makeExpectedTasks(
+            testQuests[0].id,
+            testTasks
+          ),
+        }
+        return supertest(app)
+          .get(`/api/quests/${testQuests[0].id}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .expect(200, expectedJson)
       })
     })
-  });
+  })
 });

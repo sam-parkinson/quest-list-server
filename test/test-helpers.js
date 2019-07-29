@@ -113,10 +113,14 @@ function makeTasksArray(users, quests) {
   ]
 }
 
-function makeExpectedQuest(userId, quest, tasks=[]) {
+function makeExpectedQuest(quest, tasks=[]) {
   const total_tasks = tasks
-    .filter(task => task.quest_id === quest.id)
+    .filter(task => (task.quest_id === quest.id))
     .length;
+
+  const completed_tasks = tasks
+    .filter(task => (task.quest_id === quest.id && task.completed == true))
+    .length;  
 
   return {
     id: quest.id,
@@ -124,9 +128,25 @@ function makeExpectedQuest(userId, quest, tasks=[]) {
     quest_desc: quest.quest_desc,
     completed: quest.completed,
     date_created: quest.date_created.toISOString(),
-    date_modified: quest.date_modified ? quest.date_modified : null,
-    total_tasks: total_tasks
+    date_modified: quest.date_modified ? quest.date_modified.toISOString() : null,
+    total_tasks: total_tasks,
+    completed_tasks: completed_tasks,
   }
+}
+
+function makeExpectedTasks(quest_id, tasks) {
+
+  function prepDates(task) {
+    return {
+      ...task,
+      date_created: task.date_created.toISOString(),
+      date_modified: task.date_modified ? task.date_modified.toISOString() : null,
+    }
+  }
+
+  return tasks
+    .filter(task => task.quest_id === quest_id)
+    .map(task => prepDates(task));
 }
 
 function makeQuestsFixtures() {
@@ -203,6 +223,7 @@ module.exports = {
   makeQuestsArray,
   makeTasksArray,
   makeExpectedQuest,
+  makeExpectedTasks,
 
   makeQuestsFixtures,
   cleanTables,

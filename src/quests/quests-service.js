@@ -16,7 +16,7 @@ const QuestsService = {
           `count(DISTINCT tasks) AS total_tasks` 
         ),
         db.raw(
-          `COALESCE(sum(CASE WHEN tasks.completed THEN 1 ELSE 0 END), 0) AS tasks_completed`
+          `COALESCE(sum(CASE WHEN tasks.completed THEN 1 ELSE 0 END), 0) AS completed_tasks`
         ),
       )
       .leftJoin(
@@ -27,10 +27,17 @@ const QuestsService = {
       .groupBy('quests.id')
   },
 
-  getById(db, user_id, quest_id) {
+  getQuestById(db, user_id, quest_id) {
     return QuestsService.getAllUserQuests(db, user_id)
       .where('quests.id', quest_id)
       .first()
+  },
+
+  getTasksByQuestId(db, quest_id) {
+    return db
+      .from('questify_tasks AS tasks')
+      .where('tasks.quest_id', quest_id)
+      .select('*')
   },
 
   insertQuest(db, newQuest) {
@@ -53,9 +60,22 @@ const QuestsService = {
       date_modified: quest.date_modified ? new Date(quest.date_modified) : null,
       completed: quest.completed,
       total_tasks: Number(quest.total_tasks),
-      completed_tasks: quest.completed_tasks
+      completed_tasks: Number(quest.completed_tasks)
     }
-  }
+  },
+
+  scrubTask(task) {
+    return {
+      id: task.id,
+      task_name: xss(task.task_name),
+      task_desc: xss(task.task_desc),
+      date_created: new Date(task.date_created),
+      date_modified: task.date_modified ? new Date(task.date_modified) : null,
+      completed: task.completed,
+      quest_id: task.quest_id,
+      user_id: task.user_id
+    }
+  },
 };
 
 module.exports = QuestsService;
