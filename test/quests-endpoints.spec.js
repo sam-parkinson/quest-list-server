@@ -88,7 +88,55 @@ describe.only('Quest Endpoints', function() {
           .get(`/api/quests/${testQuests[0].id}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedJson)
-      })
-    })
+      });
+    });
+  });
+
+  describe(`POST /api/quests`, () => {
+    beforeEach(() => helpers.seedUsers(db, testUsers));
+
+    it(`creates a new quest, responding with 201 and the quest`, () => {      
+      this.retries(3);
+      const testUser = testUsers[0];
+      const newQuest = {
+        quest_name: 'newQuestName',
+        quest_desc: 'new quest description',        
+      }
+
+      return supertest(app)
+        .post('/api/quests')
+        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+        .send(newQuest)
+        .expect(201)
+        .expect(res => {
+          expect(res.body).to.have.property('id')
+          expect(res.body.quest_name).to.eql(newQuest.quest_name)
+          expect(res.body.quest_desc).to.eql(newQuest.quest_desc)
+          expect(res.headers.location).to.eql(`/api/quests/${res.body.id}`)
+          const expectedDate = new Date().toLocaleString('en', { timeZone: 'UTC' })
+          const actualDate = new Date(res.body.date_created).toLocaleString()
+          expect(actualDate).to.eql(expectedDate)
+        })
+        .expect(res =>
+          db
+            .from('questify_quests')
+            .select('*')
+            .where({ id: res.body.id })  
+            .first()
+            .then(row => {
+              expect(row.quest_name).to.eql(newQuest.quest_name)
+              expect(row.quest_desc).to.eql(newQuest.quest_desc)
+              expect(row.user_id).to.eql(testUser.id)
+            })
+        )
+    });
+  });
+
+  describe(`PATCH /api/quests/:quest_id`, () => {
+
+  });
+
+  describe(`DELETE /api/quests/:quest_id`, () => {
+
   })
 });

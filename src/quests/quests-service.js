@@ -47,7 +47,7 @@ const QuestsService = {
       .returning('*')
       .then(([quest]) => quest)
       .then(quest => 
-        QuestsService.getById(db, quest.user_id, quest.id)  
+        QuestsService.getQuestById(db, quest.user_id, quest.id)  
       )
   },
 

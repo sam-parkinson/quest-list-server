@@ -47,7 +47,13 @@ questRouter
     QuestsService.insertQuest(
       req.app.get('db'),
       newQuest
-    )      
+    )
+      .then(quest => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${quest.id}`))
+          .json(QuestsService.scrubQuest(quest))
+      })      
   })
 
 questRouter
