@@ -100,6 +100,15 @@ questRouter
       })
       .catch(next)
   }) 
+  .delete((req, res, next) => {
+    QuestsService.deleteQuest(
+      req.app.get('db'),
+      req.params.quest_id
+    )
+      .then(() => {
+        res.status(204).end()
+      })
+  })
 
 async function checkQuestExists(req, res, next) {
   try{

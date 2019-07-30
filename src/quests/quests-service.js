@@ -58,6 +58,13 @@ const QuestsService = {
       .update(newFields)
   },
 
+  deleteQuest(db, id) {
+    return db
+      .from('questify_quests')
+      .where('id', id)
+      .delete()
+  },
+
   scrubQuest(quest) {
     return {
       id: quest.id,

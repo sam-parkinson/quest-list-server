@@ -183,7 +183,31 @@ describe.only('Quest Endpoints', function() {
 
   describe(`DELETE /api/quests/:quest_id`, () => {
     context(`Given there are quests in the database`, () => {
+      beforeEach('insert quests', () => 
+        helpers.seedQuests(
+          db,
+          testUsers,
+          testQuests,
+        )
+      );
 
+      it('responds with 204 and removes the quest', () => {
+        const idToRemove = 2;
+        const expectedQuests = testQuests.filter(quest => quest.id !== idToRemove);
+        return supertest(app)
+          .delete(`/api/quests/${idToRemove}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .expect(204)
+          .expect(res => 
+            db
+              .from('questify_quests')
+              .select('*')
+              .then(table => {             
+                console.log(table)
+                expect(table).to.eql(expectedQuests)                  
+              })  
+          )
+      });
     });
   });
 });
