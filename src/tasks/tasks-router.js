@@ -35,6 +35,7 @@ tasksRouter
           .location(path.posix.join(req.originalUrl, `/${task.id}`))
           .json(TasksService.scrubTask(task))
       })
+      .catch(next)
   });
 
 tasksRouter
@@ -49,7 +50,41 @@ tasksRouter
         res.json(TasksService.scrubTask(task))
       })
   })
-  .patch()
-  .delete()
+  .patch(jsonBodyParser, (req, res, next) => {
+    const { task_name, task_desc, completed } = req.body;
+    const taskToUpdate = {
+      task_name: xss(task_name),
+      task_desc: xss(task_desc),
+      completed
+    };
+
+    const numberOfValues = Object.values(taskToUpdate).filter(Boolean).length;
+    if (numberOfValues === 0) {
+      return res.status(400).kson({
+        error: {
+          message: `No values submitted for update`
+        }
+      })
+    }
+
+    TasksService.updateTask(
+      req.app.get('db'),
+      req.params.task_id,
+      taskToUpdate
+    )
+      .then(num => {
+        res.status(204).end()
+      })
+      .catch(next)
+  })
+  .delete((req, res, next) => {
+    TasksService.deleteTask(
+      req.app.get('db'),
+      req.params.task_id
+    )
+      .then(() => {
+        res.status(204).end()
+      })
+  })
 
 module.exports = tasksRouter;

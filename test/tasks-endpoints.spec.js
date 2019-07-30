@@ -96,10 +96,77 @@ describe.only('Tasks Endpoints', function() {
   });
 
   describe(`PATCH /api/tasks/:task_id`, () => {
+    context('Given there are tasks in the database', () => {
+      beforeEach('insert quests', () => 
+        helpers.seedQuests(
+          db,
+          testUsers,
+          testQuests,
+          testTasks
+        )
+      )
 
+      it('responds with 204 and updates the task', () => {
+        const idToUpdate = 2;
+        const updateTask = {
+          task_desc: 'Updated description',
+          completed: true
+        }
+        const expectedTask = {
+          ...testTasks[idToUpdate - 1],
+          ...updateTask
+        }
+        return supertest(app)
+          .patch(`/api/tasks/${idToUpdate}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .send(updateTask)
+          .expect(204)
+          .expect(res => 
+            db
+              .from('questify_tasks')
+              .select('*')
+              .where({ id: res.body.id })
+              .first()
+              .then(row => {
+                expect(row.task_name).to.eql(expectedTask.task_name)
+                expect(row.task_desc).to.eql(expectedTask.task_desc)
+                expect(row.quest_id).to.eql(expectedTask.quest_id)
+                expect(row.user_id).to.eql(testUsers[1].id)
+                expect(row.completed).to.eql(expectedTask.completed)
+              })
+          );
+      });
+    });
   });
 
   describe(`DELETE /api/tasks/:task_id`, () => {
+    context(`Given there are tasks in the database`, () => {
+      beforeEach('insert quests', () =>
+        helpers.seedQuests(
+          db,
+          testUsers,
+          testQuests,
+          testTasks
+        )
+      );
 
+      it('responds with 204 and removes the task', () => {
+        const idToRemove = 2;
+        const expectedTasks = testTasks.filter(task => task.id !== idToRemove);
+        return supertest(app)
+          .delete(`/api/tasks/${idToRemove}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .expect(204)
+          .expect(res =>
+            db
+              .from('questify_tasks')
+              .select('*') 
+              .then(table => {
+                console.log(table);
+                expect(table).to.eql(expectedTasks);
+              }) 
+          )
+      });
+    });
   });
 });

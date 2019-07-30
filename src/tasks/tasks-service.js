@@ -18,8 +18,18 @@ const TasksService = {
         TasksService.getTaskById(db, task.id)  
       )
   },
-  updateTask() {},
-  deleteTask() {},
+  updateTask(db, id, newFields) {
+    return db
+      .from('questify_tasks')
+      .where('id', id)
+      .update(newFields)
+  },
+  deleteTask(db, id) {
+    return db
+      .from('questify_tasks')
+      .where('id', id)
+      .delete()
+  },
   scrubTask(task) {
     return {
       id: task.id,
