@@ -73,6 +73,33 @@ questRouter
       })
       .catch(next)
   })
+  .patch(jsonBodyParser, (req, res, next) => {
+    const { quest_name, quest_desc, completed } = req.body;
+    const questToUpdate = {
+      quest_name: xss(quest_name), 
+      quest_desc: xss(quest_desc), 
+      completed 
+    };
+
+    const numberOfValues = Object.values(questToUpdate).filter(Boolean).length;
+    if (numberOfValues === 0) {
+      return res.status(400).json({
+        error: {
+          message: `No values submitted for update`
+        }
+      })
+    }
+
+    QuestsService.updateQuest(
+      req.app.get('db'),
+      req.params.quest_id,
+      questToUpdate
+    )
+      .then(num => {
+        res.status(204).end()
+      })
+      .catch(next)
+  }) 
 
 async function checkQuestExists(req, res, next) {
   try{

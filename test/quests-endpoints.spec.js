@@ -133,10 +133,57 @@ describe.only('Quest Endpoints', function() {
   });
 
   describe(`PATCH /api/quests/:quest_id`, () => {
+    context('Given there are quests in the database', () => {
+      beforeEach('insert quests', () => 
+        helpers.seedQuests(
+          db,
+          testUsers,
+          testQuests,
+          testTasks
+        )
+      )
 
+      it(`responds with 204 and updates the quest`, () => {
+        const idToUpdate = 2;
+        const updateQuest = {
+          quest_desc: 'Updated description'
+        }
+        const expectedQuest = {
+          ...testQuests[idToUpdate - 1],
+          ...updateQuest
+        }
+        return supertest(app)
+          .patch(`/api/quests/${idToUpdate}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+          .send(updateQuest)
+          .expect(204)
+          .expect(res =>
+            db
+              .from('questify_quests')
+              .select('*')
+              .where({ id: res.body.id })
+              .first()
+              .then(row => {
+                expect(row.quest_name).to.eql(expectedQuest.quest_name)
+                expect(row.quest_desc).to.eql(expectedQuest.quest_desc)
+              })  
+          )
+      });
+
+      it(`responds with 400 when no info supplied`, () => {
+        const idToUpdate = 2;
+        return supertest(app)
+        .patch(`/api/quests/${idToUpdate}`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+        .send({ random: 'Rover' })
+        .expect(400)
+      });
+    });
   });
 
   describe(`DELETE /api/quests/:quest_id`, () => {
+    context(`Given there are quests in the database`, () => {
 
-  })
+    });
+  });
 });
