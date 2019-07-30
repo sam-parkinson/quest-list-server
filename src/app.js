@@ -7,6 +7,7 @@ const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 const questsRouter = require('./quests/quests-router');
+const tasksRouter = require('./tasks/tasks-router');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(helmet());
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/quests', questsRouter);
+app.use('/api/tasks', tasksRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
