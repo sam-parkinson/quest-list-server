@@ -38,7 +38,7 @@ INSERT INTO questify_tasks (
   task_name,
   task_desc,
   quest_id,
-  user_id,
+  user_id
 )
 VALUES
   (
