@@ -76,8 +76,8 @@ questRouter
   .patch(jsonBodyParser, (req, res, next) => {
     const { quest_name, quest_desc, completed } = req.body;
     const questToUpdate = {
-      quest_name: xss(quest_name), 
-      quest_desc: xss(quest_desc), 
+      quest_name, 
+      quest_desc, 
       completed 
     };
 

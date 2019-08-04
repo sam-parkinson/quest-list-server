@@ -53,14 +53,14 @@ tasksRouter
   .patch(jsonBodyParser, (req, res, next) => {
     const { task_name, task_desc, completed } = req.body;
     const taskToUpdate = {
-      task_name: xss(task_name),
-      task_desc: xss(task_desc),
+      task_name,
+      task_desc,
       completed
     };
 
     const numberOfValues = Object.values(taskToUpdate).filter(Boolean).length;
     if (numberOfValues === 0) {
-      return res.status(400).kson({
+      return res.status(400).json({
         error: {
           message: `No values submitted for update`
         }
