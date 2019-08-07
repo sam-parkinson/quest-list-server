@@ -58,7 +58,12 @@ tasksRouter
       completed
     };
 
-    const numberOfValues = Object.values(taskToUpdate).filter(Boolean).length;
+    const taskToScan = {
+      ...taskToUpdate,
+      completed: completed.toString() ? completed.toString() : null
+    }
+
+    const numberOfValues = Object.values(taskToScan).filter(Boolean).length;
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
