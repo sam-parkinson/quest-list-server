@@ -1,26 +1,29 @@
-# Express Boilerplate!
+# Questify API
 
-This is a boilerplate project used for starting new projects!
+The API for Questify, an app designed to enable users to get things done by taking ordinary items and turning them into quests, much like those one might find in an RPG
 
-## Set up
+## API Documentation
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+RESTful API featuring the following endpoints:
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+  - Auth
+    Accepts post requests for login and refresh endpoints, returns an auth token
 
-## Scripts
+  - Users
+    Accepts post requests for register endpoint, adds new user to DB
+    
+  - Quests
+    Accepts get, post, patch, and delete requests, adds new quests, updates information about quests, and deletes quests
+    
+  - Tasks
+    Accepts get, post, patch, and delete requests, adds new tasks, updates information about tasks, and deletes tasks
 
-Start the application `npm start`
+## Client
 
-Start nodemon for the application `npm run dev`
+Live: https://questify-app.parkinsonsp42.now.sh
 
-Run the tests `npm test`
+Repo: https://github.com/sam-parkinson/questify-client
 
-## Deploying
+## Technology Used
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+Node.js, Express, PostgreSQL
