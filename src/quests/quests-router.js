@@ -7,15 +7,6 @@ const { requireAuth } = require('../middleware/jwt-auth');
 const questRouter = express.Router();
 const jsonBodyParser = express.json();
 
-/*
-  TODO
-
-  Get all quests matching user ID
-  Get all tasks matching quest ID and user ID
-  Post new quests
-
-*/
-
 questRouter
   .route('/')
   .all(requireAuth)
